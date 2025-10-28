@@ -126,3 +126,19 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+# CELERY CONFIGURATION
+
+# Use RabbitMQ as the broker
+CELERY_BROKER_URL = 'amqp://guest:guest@rabbitmq:5672/' 
+
+# Celery result backend (optional, but good practice)
+CELERY_RESULT_BACKEND = 'rpc://'
+
+# Define time-zone settings
+CELERY_TIMEZONE = "Africa/Accra" # Set to your local timezone
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+
+# EMAIL CONFIGURATION (Using a console backend for local testing)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

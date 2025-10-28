@@ -8,6 +8,7 @@ from .models import Payment, Booking
 from rest_framework import viewsets
 from .models import Listing, Booking
 from .serializers import ListingSerializer, BookingSerializer
+from .tasks import send_booking_confirmation_email
 
 @csrf_exempt
 def initiate_payment(request, booking_id):
@@ -88,3 +89,16 @@ def verify_payment(request, tx_ref):
 
     except requests.exceptions.RequestException as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+def perform_create(self, serializer):
+    booking_instance = serializer.save()
+
+    booking_id = booking_instance.id
+    user_email = self.request.user.email  
+    listing_name = booking_instance.listing.name 
+
+    send_booking_confirmation_email.delay(
+        booking_id, 
+        user_email, 
+        listing_name
+    )        
